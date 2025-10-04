@@ -1,4 +1,163 @@
-Öğrenci No:
-AD-SOYAD:
+Öğrenci No:250541012
+AD-SOYAD:Sümeyra ADIYAMAN
 
-Lütfen seçtiğiniz algoritmaya ait çözümü ve diğer isterleri aşağıya ekleyiniz:
+SUDOKU ÇÖZME MANTIĞI İLE İLGİLİ ALGORİTMA
+
+Elbette, işte Sudoku bulmacalarını çözmek için geliştirilmiş, akıllı ve verimli bir algoritma.
+
+Bu algoritma, Geri İzleme (Backtracking) yöntemini temel alır ancak önemli bir iyileştirme içerir: Her adımda rastgele bir boş hücre seçmek yerine, hamle olasılığı en kısıtlı olan hücreyi seçer. Bu "En Az Olasılıklı Değer" (Minimum Remaining Values - MRV) olarak bilinen sezgisel yöntem, algoritmanın çok daha hızlı bir şekilde çözüme ulaşmasını veya bir yolun çıkmaz sokak olduğunu anlamasını sağlar.
+
+Sudoku Çözme Algoritması: Akıllı Geri İzleme (MRV ile)
+Algoritma üç temel fonksiyondan oluşur:
+
+Coz(tahta): Tahtayı çözmeye çalışan ana özyineli (recursive) fonksiyondur.
+
+EnKisitliHucereyiBul(tahta): Tahta üzerinde stratejik olarak en mantıklı boş hücreyi (yani en az yerleştirme seçeneği olan hücreyi) bulur.
+
+GecerliMi(tahta, sayi, konum): Bir sayının belirtilen konuma Sudoku kurallarına göre yerleştirilip yerleştirilemeyeceğini kontrol eder.
+
+Detaylı Pseudocode
+// ANA PROGRAM: Sudoku çözücüyü başlatır ve sonucu ekrana basar.
+
+ANA_PROGRAM_BASLA
+
+    // 0'ların boş hücreleri temsil ettiği 9x9'luk bir Sudoku tahtası.
+    tahta = [
+        [5, 3, 0, 0, 7, 0, 0, 0, 0],
+        [6, 0, 0, 1, 9, 5, 0, 0, 0],
+        [0, 9, 8, 0, 0, 0, 0, 6, 0],
+        [8, 0, 0, 0, 6, 0, 0, 0, 3],
+        [4, 0, 0, 8, 0, 3, 0, 0, 1],
+        [7, 0, 0, 0, 2, 0, 0, 0, 6],
+        [0, 6, 0, 0, 0, 0, 2, 8, 0],
+        [0, 0, 0, 4, 1, 9, 0, 0, 5],
+        [0, 0, 0, 0, 8, 0, 0, 7, 9]
+    ]
+
+    // Çözücü fonksiyonunu çağır.
+    EGER Coz(tahta) == true ISE
+        YAZ "Sudoku başarıyla çözüldü:"
+        TahtayiEkranaBas(tahta)
+    DEGILSE
+        YAZ "Bu Sudoku bulmacasının bir çözümü bulunamadı."
+    BITIR EGER
+
+ANA_PROGRAM_BITIR
+
+
+// -----------------------------------------------------------------
+// FONKSİYON 1: Ana Özyineli Çözücü
+// -----------------------------------------------------------------
+FONKSIYON Coz(tahta)
+
+    // Adım 1: Çözmek için en stratejik boş hücreyi bul.
+    bos_konum = EnKisitliHucereyiBul(tahta)
+
+    // Eğer çözülecek boş hücre kalmadıysa, bulmaca tamamlanmıştır.
+    // Bu, özyinelemenin temel durma koşuludur.
+    EGER bos_konum == null ISE
+        DONDUR true // Başarılı!
+    DEGILSE
+        satir = bos_konum.satir
+        sutun = bos_konum.sutun
+    BITIR EGER
+
+    // Adım 2: Bulunan boş hücre için olası sayıları (1-9) dene.
+    DONGU sayi = 1'DEN 9'A KADAR
+
+        // Adım 3: Denenen sayının o anki konum için geçerli olup olmadığını kontrol et.
+        EGER GecerliMi(tahta, sayi, {satir, sutun}) == true ISE
+
+            // Adım 3a: Sayı geçerliyse, geçici olarak tahtaya yerleştir.
+            tahta[satir][sutun] = sayi
+
+            // Adım 3b: Kalan kısmı çözmek için kendini tekrar çağır (ÖZYİNELEME).
+            EGER Coz(tahta) == true ISE
+                DONDUR true // Eğer gelecek adımlar başarılı olursa, çözüm bulunmuştur.
+            BITIR EGER
+
+            // Adım 3c: Gelecek adımlar başarısız olduysa, bu deneme yanlıştı.
+            // Yapılan değişikliği geri al (BACKTRACK) ve döngüdeki bir sonraki sayıyı dene.
+            tahta[satir][sutun] = 0
+
+        BITIR EGER
+    BITIR DONGU
+
+    // Adım 4: 1'den 9'a kadar hiçbir sayı bu hücre için bir çözüme götürmediyse,
+    // bir önceki adımda bir hata yapılmıştır. Başarısız olduğunu bildir.
+    DONDUR false
+
+BITIR FONKSIYON
+
+
+// -----------------------------------------------------------------
+// FONKSİYON 2: En Kısıtlı Hücreyi Bulan Akıllı Fonksiyon (MRV)
+// -----------------------------------------------------------------
+FONKSIYON EnKisitliHucereyiBul(tahta)
+    en_iyi_hucre = null
+    en_az_olasilik = 10 // Olası sayı adedi 9'dan fazla olamaz, 10 güvenli bir başlangıç değeri.
+
+    DONGU satir = 0'DAN 8'E KADAR
+        DONGU sutun = 0'DAN 8'E KADAR
+            // Sadece boş hücreleri dikkate al.
+            EGER tahta[satir][sutun] == 0 ISE
+                mevcut_olasilik_sayisi = 0
+                // Bu boş hücreye kaç farklı sayının gelebileceğini hesapla.
+                DONGU sayi = 1'DEN 9'A KADAR
+                    EGER GecerliMi(tahta, sayi, {satir, sutun}) ISE
+                        mevcut_olasilik_sayisi = mevcut_olasilik_sayisi + 1
+                    BITIR EGER
+                BITIR DONGU
+
+                // Eğer bu hücre, şimdiye kadar bulduğumuz en kısıtlı hücre ise (daha az seçeneği varsa),
+                // en iyi hücre olarak bunu kaydet.
+                EGER mevcut_olasilik_sayisi < en_az_olasilik ISE
+                    en_az_olasilik = mevcut_olasilik_sayisi
+                    en_iyi_hucre = {satir, sutun}
+                BITIR EGER
+            BITIR EGER
+        BITIR DONGU
+    BITIR DONGU
+
+    DONDUR en_iyi_hucre // Bulunan en kısıtlı hücreyi veya hiç boş hücre kalmadıysa null döndür.
+BITIR FONKSIYON
+
+
+// -----------------------------------------------------------------
+// FONKSİYON 3: Geçerlilik Kontrol Fonksiyonu
+// -----------------------------------------------------------------
+FONKSIYON GecerliMi(tahta, sayi, konum)
+    satir = konum.satir
+    sutun = konum.sutun
+
+    // 1. KONTROL: Sayının bulunduğu satırda başka bir aynı sayı var mı?
+    DONGU s = 0'DAN 8'E KADAR
+        EGER tahta[satir][s] == sayi ISE
+            DONDUR false
+        BITIR EGER
+    BITIR DONGU
+
+    // 2. KONTROL: Sayının bulunduğu sütunda başka bir aynı sayı var mı?
+    DONGU r = 0'DAN 8'E KADAR
+        EGER tahta[r][sutun] == sayi ISE
+            DONDUR false
+        BITIR EGER
+    BITIR DONGU
+
+    // 3. KONTROL: Sayının bulunduğu 3x3'lük kutuda başka bir aynı sayı var mı?
+    kutu_baslangic_satir = satir - (satir % 3)
+    kutu_baslangic_sutun = sutun - (sutun % 3)
+
+    DONGU r = 0'DAN 2'YE KADAR
+        DONGU s = 0'DAN 2'YE KADAR
+            satir_idx = kutu_baslangic_satir + r
+            sutun_idx = kutu_baslangic_sutun + s
+            EGER tahta[satir_idx][sutun_idx] == sayi ISE
+                DONDUR false
+            BITIR EGER
+        BITIR DONGU
+    BITIR DONGU
+
+    // Eğer sayı üç kuralı da ihlal etmiyorsa, yerleştirme geçerlidir.
+    DONDUR true
+BITIR FONKSIYON
