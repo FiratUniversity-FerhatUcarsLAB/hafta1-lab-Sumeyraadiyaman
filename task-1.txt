@@ -1,4 +1,201 @@
-Öğrenci No:
-AD-SOYAD:
+Öğrenci No:250541012
+AD-SOYAD:Sümeyra ADIYAMAN
 
-Lütfen seçtiğiniz algoritmaya ait çözümü ve diğer isterleri aşağıya ekleyiniz:
+SINAV ÇALIŞMA PLANI OLUŞTURMA ALGORİTMASI
+
+  SORDUĞUM SORULAR: bu algoritmayı kişinin kaynaklarını,kullanacağı ders materyallerini,konuyu nasıl çalışacaksa (video izlemek,okula gitmek,konuyu okuyarak çalışmak) ve konu konu çözmesi gereken soru sayılarını da ekleyerek detaylandır.
+Kullanıcıdan alınan bilgilerin yanlış veya anlamsız olmadığı,günlük çalışma günlerinin ve kalan günlerin doğru hesaplandığı,kullanıcıddan zorluk derecesi alarak efor puanlarında oynama yapabileceğimiz,Günlük çalışma süresi dolmazsa veya kullanıcı bazı günleri atlamak isterse, fazla kalan süreyi başka günlere aktarabileceğimiz,konunun zorluğuna göre ayırdığımın gün sayısının değişebileceği ve kullanıcıdan geri bildirim alabileceğimiz  yeni bir algoritma geliştir.
+
+
+ALGORİTMA BAŞLAT: GelismisCalismaPlaniOlustur
+
+//======================================================================
+// ADIM 1: Detaylı Bilgileri Toplama (GİRDİLER)
+//======================================================================
+DEĞİŞKENLERİ TANIMLA:
+  sınavTarihi: Tarih
+  bugununTarihi: Tarih
+  konuDetaylari: Dizi [Nesne {konuAdi, onemDerecesi, bilgiSeviyesi, kaynaklar, calismaMetodu, hedefSoruSayisi}]
+  haftalikCalismaGunleri: Dizi [Pazartesi, Salı, ...]
+  gunlukCalismaSaati: Sayı
+  calismaBloguSuresi: Sayı (Dakika, örn: 50)
+  molaSuresi: Sayı (Dakika, örn: 10)
+  ortalamaSoruCozmeSuresi: Sayı (Dakika, örn: 3)
+  haftalikTekrarGunu: Metin
+  haftalikTekrarSuresi: Sayı (Saat)
+
+GİRDİ AL (kullanıcıdan):
+  YAZDIR "Sınav tarihini girin (GG.AA.YYYY): "
+  OKU sınavTarihi
+
+  YAZDIR "Haftanın hangi günleri çalışacaksınız?: "
+  OKU haftalikCalismaGunleri
+
+  YAZDIR "Günlük kaç saat çalışmayı planlıyorsunuz?: "
+  OKU gunlukCalismaSaati
+
+  YAZDIR "Bir soruyu çözmeniz ortalama kaç dakika sürüyor?: "
+  OKU ortalamaSoruCozmeSuresi
+  
+  YAZDIR "Konu bilgilerini girmeye başlayın (bitirmek için konu adına 'bitti' yazın): "
+  DÖNGÜ BAŞLAT (kullanıcı 'bitti' yazana kadar)
+    YAZDIR "Konu Adı: "
+    OKU konuAdi
+    EĞER konuAdi == "bitti": DÖNGÜYÜ KIR
+
+    YAZDIR konuAdi + " için önem derecesi (1-5): "
+    OKU onemDerecesi
+    
+    YAZDIR konuAdi + " için bilgi seviyeniz (1-10): "
+    OKU bilgiSeviyesi
+    
+    YAZDIR konuAdi + " için kullanılacak kaynaklar/materyaller (virgülle ayırın): "
+    OKU kaynaklar // Örn: "Kitap A, YouTube Playlist B"
+    
+    YAZDIR konuAdi + " için çalışma metodu (örn: Video İzlemek, Okul Dersi, Konu Okumak): "
+    OKU calismaMetodu
+    
+    YAZDIR konuAdi + " için çözülecek hedef soru sayısı: "
+    OKU hedefSoruSayisi
+    
+    konuDetaylari'na EKLE {
+      konuAdi: konuAdi,
+      onemDerecesi: onemDerecesi,
+      bilgiSeviyesi: bilgiSeviyesi,
+      kaynaklar: kaynaklar,
+      calismaMetodu: calismaMetodu,
+      hedefSoruSayisi: hedefSoruSayisi
+    }
+  DÖNGÜ BİTİR
+
+//======================================================================
+// ADIM 2: Zaman ve Efor Analizi
+//======================================================================
+İŞLEMLER:
+  kalanGunSayisi = sınavTarihi - bugununTarihi
+  toplamCalismaGunu = // Önceki algoritmadaki gibi hesapla
+  toplamCalismaSaati = toplamCalismaGunu * gunlukCalismaSaati
+
+  DEĞİŞKEN planlanacakAktiviteler: Dizi
+  toplamEforPuani = 0
+
+  HER konu İÇİN konuDetaylari'nda:
+    // Konu öğrenme eforunu hesapla
+    konuOgrenmeEforu = (11 - konu.bilgiSeviyesi) * konu.onemDerecesi
+    toplamEforPuani = toplamEforPuani + konuOgrenmeEforu
+    
+    planlanacakAktiviteler'e EKLE {
+      tip: "Konu Öğrenme",
+      konu: konu.konuAdi,
+      efor: konuOgrenmeEforu,
+      metot: konu.calismaMetodu,
+      kaynak: konu.kaynaklar,
+      atananSure: 0
+    }
+    
+    // Soru çözme eforunu hesapla (her soru için sabit bir efor puanı verelim, örn: 1)
+    soruCozmeEforu = konu.hedefSoruSayisi * 1 
+    toplamEforPuani = toplamEforPuani + soruCozmeEforu
+    
+    planlanacakAktiviteler'e EKLE {
+      tip: "Soru Çözümü",
+      konu: konu.konuAdi,
+      efor: soruCozmeEforu,
+      hedef: konu.hedefSoruSayisi,
+      kaynak: konu.kaynaklar,
+      atananSure: 0
+    }
+  SONRAKİ konu
+  
+  // Aktiviteleri efor puanına göre büyükten küçüğe sırala
+  SIRALA planlanacakAktiviteler'i 'efor' değerine göre azalan şekilde
+
+//======================================================================
+// ADIM 3: Aktivite Bazlı Zaman Dağılımı
+//======================================================================
+  HER aktivite İÇİN planlanacakAktiviteler'de:
+    // Soru çözümü için gereken süreyi doğrudan hesapla
+    EĞER aktivite.tip == "Soru Çözümü":
+        gerekenSure = aktivite.hedef * ortalamaSoruCozmeSuresi
+        aktivite.atananSure = gerekenSure
+        toplamCalismaSaati = toplamCalismaSaati - (gerekenSure / 60)
+    BİTİR EĞER
+
+  // Kalan zamanı konu öğrenme aktivitelerine eforlarına göre dağıt
+  HER aktivite İÇİN planlanacakAktiviteler'de:
+    EĞER aktivite.tip == "Konu Öğrenme":
+        aktiviteyeAyrilacakSure = (aktivite.efor / toplamEforPuani) * toplamCalismaSaati
+        aktivite.atananSure = aktiviteyeAyrilacakSure * 60 // Dakikaya çevir
+    BİTİR EĞER
+  SONRAKİ aktivite
+
+//======================================================================
+// ADIM 4: Detaylı Günlük Program Oluşturma
+//======================================================================
+  DEĞİŞKEN gunlukPlan: Sözlük {Tarih: [Aktivite Detayı]}
+  aktiviteIndex = 0
+
+  DÖNGÜ i = 0'dan kalanGunSayisi - 1'e KADAR:
+    mevcutGun = bugununTarihi + i gün
+    
+    EĞER mevcutGun bir çalışma günü İSE:
+      gunlukCalisilanDakika = 0
+      
+      // TEKRAR EDEN İŞLEM: Günlük çalışma süresi dolana kadar aktivite ekle
+      DÖNGÜ BAŞLAT (gunlukCalisilanDakika < gunlukCalismaSaati * 60)
+        EĞER aktiviteIndex >= planlanacakAktiviteler.BOYUTU: DÖNGÜYÜ KIR
+        
+        siradakiAktivite = planlanacakAktiviteler[aktiviteIndex]
+        
+        // KOŞULLU DURUM 1: Aktivitenin süresi bitti mi?
+        EĞER siradakiAktivite.atananSure <= 0:
+          aktiviteIndex = aktiviteIndex + 1
+          DEVAM ET // Döngünün başına dön
+        BİTİR EĞER
+        
+        // Bir çalışma bloğu kadar süre ayır
+        calisilacakSure = MIN(calismaBloguSuresi, siradakiAktivite.atananSure)
+        
+        detay = ""
+        EĞER siradakiAktivite.tip == "Konu Öğrenme":
+          detay = siradakiAktivite.konu + " - Metot: " + siradakiAktivite.metot + " (Kaynak: " + siradakiAktivite.kaynak + ")"
+        DEĞİLSE EĞER siradakiAktivite.tip == "Soru Çözümü":
+          cozulecekSoru = (calisilacakSure / ortalamaSoruCozmeSuresi).YUVARLA()
+          detay = siradakiAktivite.konu + " - Hedef: " + cozulecekSoru + " Soru"
+        BİTİR EĞER
+
+        gunlukPlan[mevcutGun]'e EKLE [siradakiAktivite.tip, detay, calisilacakSure]
+        
+        siradakiAktivite.atananSure = siradakiAktivite.atananSure - calisilacakSure
+        gunlukCalisilanDakika = gunlukCalisilanDakika + calisilacakSure
+        
+        // KOŞULLU DURUM 2: Mola zamanı geldi mi?
+        EĞER gunlukCalisilanDakika < gunlukCalismaSaati * 60 AND siradakiAktivite.atananSure > 0:
+          gunlukPlan[mevcutGun]'e EKLE ["Mola", "Dinlenme", molaSuresi]
+          gunlukCalisilanDakika = gunlukCalisilanDakika + molaSuresi
+        BİTİR EĞER
+        
+      DÖNGÜ BİTİR
+    BİTİR EĞER
+  DÖNGÜ BİTİR
+
+//======================================================================
+// ADIM 5: Zenginleştirilmiş Plan Sunumu (ÇIKTI)
+//======================================================================
+  YAZDIR "=================================================="
+  YAZDIR "         DETAYLI SINAV ÇALIŞMA PLANI              "
+  YAZDIR "=================================================="
+  
+  HER tarih İÇİN gunlukPlan anahtarlarında:
+    YAZDIR "\n--- " + tarih.FORMATLA("GG.AA.YYYY - GGGG") + " ---"
+    
+    HER planDetayi İÇİN gunlukPlan[tarih]'de:
+      tip = planDetayi[0]
+      aciklama = planDetayi[1]
+      sure = planDetayi[2]
+      
+      YAZDIR "[" + tip + "] " + aciklama + " (" + sure + " Dakika)"
+    SONRAKİ planDetayi
+  SONRAKİ tarih
+
+ALGORİTMA BİTİR
