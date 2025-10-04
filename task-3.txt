@@ -1,4 +1,37 @@
-Öğrenci No:
-AD-SOYAD:
+Öğrenci No:250541012
+AD-SOYAD:Sümeyra ADIYAMAN
 
-Lütfen seçtiğiniz algoritmaya ait çözümü ve diğer isterleri aşağıya ekleyiniz:
+TELEFON REHBERİNİ ALFABETİK DÜZENLEME İLE İLGİLİ ALGORİTMA
+
+// ===================================================================
+// BÖLÜM 1: YARDIMCI FONKSİYONLAR VE VERİ YAPILARI
+// ===================================================================
+
+// İŞLEV: Bölgeye Duyarlı Karşılaştırma (Locale-Aware Comparison)
+// AÇIKLAMA: İki metni, Türkçe gibi belirli bir dilin alfabe kurallarına
+// göre karşılaştırır. Bu, 'Ç'nin 'C'den sonra, 'İ'nin 'I'dan sonra
+// gelmesi gibi kuralları doğru bir şekilde uygular.
+// DÖNÜŞ: metin1<metin2 -> Negatif, metin1==metin2 -> 0, metin1>metin2 -> Pozitif
+İŞLEV BölgeyeDuyarlıKarşılaştır(metin1, metin2):
+  // Burası gerçek bir dilde (Python: locale.strxfrm, Java: Collator)
+  // kütüphane çağrısı ile yapılır. Biz var olduğunu varsayıyoruz.
+  // ... dil kurallarına göre karşılaştırma mantığı ...
+  DÖN (dil kurallarına göre karşılaştırma sonucu)
+
+
+// SINIF: Kişi
+// AÇIKLAMA: Telefon rehberindeki bir kişiyi temsil eder.
+// Ad ve telefon numarası özelliklerini barındırır ve temel
+// giriş kontrolü yapar.
+SINIF Kişi:
+  ÖZEL metin Ad
+  ÖZEL metin TelefonNumarası
+
+  // Yapıcı Metot (Constructor)
+  YAPICI METOT(ad, telefon):
+    EĞER ad == null VEYA ad.boşluklarıTemizle() == "" ISE:
+      HATA FIRLAT("Kişi adı boş olamaz.")
+    this.Ad = ad
+    this.TelefonNumarası = telefon
+
+  // Özelliklere dışarıdan erişim için metotlar (Getters)
