@@ -1,4 +1,65 @@
-Öğrenci No:
-AD-SOYAD:
+Öğrenci No:250541012
+AD-SOYAD:Sümeyra ADIYAMAN
 
-Lütfen seçtiğiniz algoritmaya ait çözümü ve diğer isterleri aşağıya ekleyiniz:
+N KİŞİ İÇİN ADİL PASTA PAYLAŞIMI İLE İLGİLİ ALGORİTMA
+
+
+FONKSIYON GeliştirilmişAdilPastaDağıtımı(Kişiler, Pasta):
+
+    // 1. BAŞLANGIÇ AYARLARI
+    N = Kişiler listesinin eleman sayısı
+    Kalan_Kişiler = Kişiler listesinin bir kopyası
+    Kalan_Pasta = Pasta
+    Dağıtılan_Parçalar = {} // Herkesin aldığı parçayı saklayacak yapı
+    Kırpılanlar_Havuzu = [] // Kırpılan tüm küçük parçaların biriktiği havuz
+
+    // 2. ANA DÖNGÜ: N-1 KİŞİ PAYINI ALANA KADAR DEVAM EDER
+    DÖNGÜ i = 1'DEN N-1'E KADAR:
+
+        // 2a. Kesme Aşaması
+        Kesici = Kalan_Kişiler listesindeki ilk kişi
+        // Not: Kesici, BÜTÜN pastanın 1/N'i olduğuna inandığı bir parça keser.
+        Mevcut_Parça = Kesici.Kes(Kalan_Pasta, 1/N) 
+        Son_Azaltan = Kesici // Parçaya en son dokunan kişiyi izler
+
+        // 2b. Azaltma (Değerlendirme) Aşaması
+        // Kesici dışındaki diğer kişiler parçayı sırayla inceler.
+        DÖNGÜ j = 2'DEN Kalan_Kişiler listesinin eleman sayısına KADAR:
+            Değerlendirici = Kalan_Kişiler[j]
+
+            // Değerlendirme için adil pay referansını hesapla
+            KişininAdilPayDeğeri = (1/N) * Değer(Değerlendirici, Pasta)
+
+            // KOŞUL: Parça, kişinin adil payından daha mı değerli?
+            EĞER Değer(Değerlendirici, Mevcut_Parça) > KişininAdilPayDeğeri:
+                // Cevap evetse, parçayı kendi algısına göre adil paya indirger.
+                [Yeni_Parça, Kırpılan_Kısım] = Değerlendirici.Azalt(Mevcut_Parça, KişininAdilPayDeğeri)
+                
+                Mevcut_Parça = Yeni_Parça // Değerlendirilen parça artık bu yeni, küçülmüş parçadır.
+                Kırpılanlar_Havuzu.Ekle(Kırpılan_Kısım) // Kırpılan kısım havuza atılır.
+                
+                Son_Azaltan = Değerlendirici // Parçaya en son dokunan kişi güncellenir.
+            SON EĞER
+        SON DÖNGÜ (j)
+
+        // 2c. Parçayı Atama Aşaması
+        // Tur sonunda parçaya en son dokunan kişi (Son_Azaltan) o parçayı alır.
+        Alan_Kişi = Son_Azaltan
+        Dağıtılan_Parçalar[Alan_Kişi] = Mevcut_Parça
+        
+        // 2d. Durum Güncelleme
+        Kalan_Pasta = Kalan_Pasta - Mevcut_Parça // Ana pastadan alınan parça çıkarılır.
+        Kalan_Kişiler listesinden Alan_Kişi çıkarılır.
+
+    SON DÖNGÜ (i)
+
+    // 3. SON ADIM: SON KİŞİNİN PAYI
+    // Döngü bittiğinde geriye kalan tek kişi, kalan tüm pastayı alır.
+    Son_Kalan_Kişi = Kalan_Kişiler[0]
+    
+    // Son kişi, hem kalan büyük parçayı hem de havuzdaki tüm kırpıntıları alır.
+    Toplanmış_Son_Parça = Kalan_Pasta + Kırpılanlar_Havuzu'ndaki tüm parçalar
+    Dağıtılan_Parçalar[Son_Kalan_Kişi] = Toplanmış_Son_Parça
+
+    // 4. SONUÇ
+    DÖNDÜR Dağıtılan_Parçalar
