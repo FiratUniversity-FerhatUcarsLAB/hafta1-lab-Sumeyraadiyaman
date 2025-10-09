@@ -161,3 +161,14 @@ FONKSIYON GecerliMi(tahta, sayi, konum)
     // Eğer sayı üç kuralı da ihlal etmiyorsa, yerleştirme geçerlidir.
     DONDUR true
 BITIR FONKSIYON
+
+
+
+
+ADIM 1=sudoku çözme mantığıyla ilgili bir agoritma geliştimek istiyorum. koşullu durumları ve tekrar eden işlemleri de içeren detaylı bir pseudocode yazmama yardım eder misin?
+
+ADIM 2= Bana verilen algoritmayı farklı bir LLM'e yazarak geliştirilebilecek yönlerini istedim
+
+ADIM 3=Bana verilen önerileri alarak yeni algoritmayı oluştudum
+
+
