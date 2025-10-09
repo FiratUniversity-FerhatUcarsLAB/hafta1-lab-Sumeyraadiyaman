@@ -63,3 +63,5 @@ FONKSIYON GeliştirilmişAdilPastaDağıtımı(Kişiler, Pasta):
 
     // 4. SONUÇ
     DÖNDÜR Dağıtılan_Parçalar
+
+ADIM 1=N kişi için adil pasta dağılımı ile ilgili bir agoritma geliştimek istiyorum. koşullu durumları ve tekrar eden işlemleri de içeren detaylı bir pseudocode yazmama yardım eder misin
