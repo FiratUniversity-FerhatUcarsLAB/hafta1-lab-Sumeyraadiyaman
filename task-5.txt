@@ -1,4 +1,182 @@
-Öğrenci No:
-AD-SOYAD:
+Öğrenci No:250541012
+AD-SOYAD:SÜMEYRA ADIYAMAN
 
-Lütfen seçtiğiniz algoritmaya ait çözümü ve diğer isterleri aşağıya ekleyiniz:
+BAŞLA
+
+// =================================================================================
+// BÖLÜM 1: MERKEZİ İŞLEM FONKSİYONU
+// Tüm harcama mantığını, kontrolleri ve güncellemeleri yöneten ana fonksiyon.
+// DEĞİŞKEN anahtar kelimesi, bu değişkenlerin fonksiyon içinde kalıcı olarak değiştirileceğini belirtir.
+// =================================================================================
+FONKSİYON HarcamaYap(SAYI miktar, DEĞİŞKEN SAYI kategoriBütçesi, DEĞİŞKEN SAYI harcananKategori, DEĞİŞKEN SAYI genelKalanBütçe, METİN kategoriAdı)
+  
+  // Kontrol 1: Genel bütçe yeterli mi?
+  EĞER (genelKalanBütçe < miktar) O ZAMAN
+    YAZDIR "HATA: Genel bütçeniz yetersiz! Harcama gerçekleştirilemedi."
+    DÖNDÜR false // İşlem başarısız
+  SON EĞER
+  
+  // Kontrol 2: İlgili kategori bütçesi yeterli mi?
+  EĞER (harcananKategori + miktar > kategoriBütçesi) O ZAMAN
+    YAZDIR "UYARI: '" + kategoriAdı + "' bütçeniz bu harcama için yetersiz."
+    DÖNDÜR false // İşlem başarısız, ana döngüde acil durum fonu kullanımı teklif edilecek
+  SON EĞER
+
+  // Harcama işlemi onaylandı ve gerçekleştiriliyor
+  harcananKategori = harcananKategori + miktar
+  genelKalanBütçe = genelKalanBütçe - miktar
+  YAZDIR (kategoriAdı + " harcaması eklendi. Kalan " + kategoriAdı + " bütçesi: " + (kategoriBütçesi - harcananKategori) + " TL")
+
+  // Proaktif Uyarı: Kategori bütçesinin %80'i aşıldı mı?
+  EĞER (harcananKategori >= kategoriBütçesi * 0.8 VE harcananKategori - miktar < kategoriBütçesi * 0.8) O ZAMAN
+    YAZDIR "BİLGİ: '" + kategoriAdı + "' bütçenizin %80'ini harcadınız!"
+  SON EĞER
+  
+  DÖNDÜR true // İşlem başarılı
+SON FONKSİYON
+
+
+// =================================================================================
+// BÖLÜM 2: DEĞİŞKENLER VE BAŞLANGIÇ AYARLARI
+// Algoritmanın kullanacağı tüm parasal değerler ve takip değişkenleri burada tanımlanır.
+// =================================================================================
+SAYI toplamBütçe = 4000.00
+SAYI konaklamaGideri = 1200.00
+SAYI kalanBütçe
+
+// Kategorilere ayrılmış tahmini aylık bütçeler
+SAYI marketBütçesi = 700.00
+SAYI öğleYemeğiBütçesi = 500.00
+SAYI dışarıdaYemekBütçesi = 400.00
+SAYI ulaşımBütçesi = 250.00
+SAYI sosyalBütçesi = 250.00
+SAYI telefonBütçesi = 200.00
+SAYI eğitimBütçesi = 150.00
+SAYI temizlikBütçesi = 100.00
+SAYI beklenmedikGiderlerBütçesi = 250.00
+
+// Ay boyunca yapılan gerçek harcamaları tutacak değişkenler (başlangıçta sıfır)
+SAYI harcananMarket = 0.0, harcananÖğleYemeği = 0.0, harcananDışarıdaYemek = 0.0
+SAYI harcananUlaşım = 0.0, harcananSosyal = 0.0, harcananTelefon = 0.0
+SAYI harcananEğitim = 0.0, harcananTemizlik = 0.0, harcananBeklenmedik = 0.0
+
+
+// =================================================================================
+// BÖLÜM 3: ANA PROGRAM AKIŞI (AYLIK DÖNGÜ)
+// Programın ana gövdesi. Sabit giderler düşülür ve 30 günlük harcama döngüsü başlar.
+// =================================================================================
+kalanBütçe = toplamBütçe - konaklamaGideri
+YAZDIR "Aya 4000 TL ile başlandı. 1200 TL konaklama sonrası harcanabilir bütçe: " + kalanBütçe + " TL"
+
+DÖNGÜ gün = 1 den 30 a KADAR
+  YAZDIR "----------- GÜN " + gün + " -----------"
+  
+  METİN harcamaYapmayaDevam = 'E'
+  SÜRECE (harcamaYapmayaDevam == 'E')
+    GİRDİ "Harcama türü girin (Market/Öğle/Akşam/Ulaşım/Sosyal/Telefon/Eğitim/Temizlik/Diğer/Çıkış): ": harcamaTürü
+    
+    EĞER (harcamaTürü == "Çıkış") O ZAMAN
+      harcamaYapmayaDevam = 'H'
+    DEĞİLSE
+      GİRDİ "Harcama tutarını girin (ör: 25.50): ": miktar
+      MANTIKSAL işlemBaşarılı = false
+      
+      EĞER (harcamaTürü == "Market") O ZAMAN
+        işlemBaşarılı = HarcamaYap(miktar, DEĞİŞKEN marketBütçesi, DEĞİŞKEN harcananMarket, DEĞİŞKEN kalanBütçe, "Market")
+      DEĞİLSE EĞER (harcamaTürü == "Öğle") O ZAMAN
+        işlemBaşarılı = HarcamaYap(miktar, DEĞİŞKEN öğleYemeğiBütçesi, DEĞİŞKEN harcananÖğleYemeği, DEĞİŞKEN kalanBütçe, "Öğle Yemeği")
+      DEĞİLSE EĞER (harcamaTürü == "Akşam") O ZAMAN
+        işlemBaşarılı = HarcamaYap(miktar, DEĞİŞKEN dışarıdaYemekBütçesi, DEĞİŞKEN harcananDışarıdaYemek, DEĞİŞKEN kalanBütçe, "Dışarıda Yemek")
+      DEĞİLSE EĞER (harcamaTürü == "Ulaşım") O ZAMAN
+        işlemBaşarılı = HarcamaYap(miktar, DEĞİŞKEN ulaşımBütçesi, DEĞİŞKEN harcananUlaşım, DEĞİŞKEN kalanBütçe, "Ulaşım")
+      DEĞİLSE EĞER (harcamaTürü == "Sosyal") O ZAMAN
+        işlemBaşarılı = HarcamaYap(miktar, DEĞİŞKEN sosyalBütçesi, DEĞİŞKEN harcananSosyal, DEĞİŞKEN kalanBütçe, "Sosyal")
+      DEĞİLSE EĞER (harcamaTürü == "Telefon") O ZAMAN
+        işlemBaşarılı = HarcamaYap(miktar, DEĞİŞKEN telefonBütçesi, DEĞİŞKEN harcananTelefon, DEĞİŞKEN kalanBütçe, "Telefon")
+      DEĞİLSE EĞER (harcamaTürü == "Eğitim") O ZAMAN
+        işlemBaşarılı = HarcamaYap(miktar, DEĞİŞKEN eğitimBütçesi, DEĞİŞKEN harcananEğitim, DEĞİŞKEN kalanBütçe, "Eğitim")
+      DEĞİLSE EĞER (harcamaTürü == "Temizlik") O ZAMAN
+        işlemBaşarılı = HarcamaYap(miktar, DEĞİŞKEN temizlikBütçesi, DEĞİŞKEN harcananTemizlik, DEĞİŞKEN kalanBütçe, "Temizlik")
+      DEĞİLSE EĞER (harcamaTürü == "Diğer") O ZAMAN
+        işlemBaşarılı = HarcamaYap(miktar, DEĞİŞKEN beklenmedikGiderlerBütçesi, DEĞİŞKEN harcananBeklenmedik, DEĞİŞKEN kalanBütçe, "Beklenmedik Giderler")
+      DEĞİLSE
+        YAZDIR "Geçersiz kategori girdiniz."
+      SON EĞER
+      
+      // Kategori bütçesi yetersizse, beklenmedik giderler fonunu teklif et
+      EĞER (işlemBaşarılı == false VE kalanBütçe >= miktar) O ZAMAN
+        GİRDİ "Kategori bütçeniz yetersiz. Bu harcamayı 'Beklenmedik Giderler' fonundan kullanmak ister misiniz? (E/H)": acilKullanım
+        EĞER (acilKullanım == 'E') O ZAMAN
+          HarcamaYap(miktar, DEĞİŞKEN beklenmedikGiderlerBütçesi, DEĞİŞKEN harcananBeklenmedik, DEĞİŞKEN kalanBütçe, "Beklenmedik Giderler")
+        SON EĞER
+      SON EĞER
+    SON EĞER
+  SON SÜRECE
+
+  YAZDIR "Günün sonunda kalan toplam bütçe: " + kalanBütçe + " TL"
+
+  // Her 5 günde bir ilerleme raporu ver
+  EĞER (gün % 5 == 0) O ZAMAN
+    YAZDIR "--- 5 GÜNLÜK ÖZET RAPORU (GÜN " + gün + ") ---"
+    YAZDIR "   Bugüne kadar harcanan: " + (2800.00 - kalanBütçe) + " TL"
+    YAZDIR "   Kalan toplam bütçe: " + kalanBütçe + " TL"
+    YAZDIR "----------------------------------"
+  SON EĞER
+DÖNGÜ SONU
+
+
+// =================================================================================
+// BÖLÜM 4: GELİŞTİRİLMİŞ AY SONU RAPORU
+// Ay bittiğinde, harcamaların detaylı analizini ve yüzdesel dağılımını sunar.
+// =================================================================================
+YAZDIR "=============== GELİŞTİRİLMİŞ AY SONU RAPORU ==============="
+SAYI toplamHarcama = (toplamBütçe - konaklamaGideri) - kalanBütçe
+
+EĞER (toplamHarcama > 0) O ZAMAN
+  YAZDIR "KATEGORİ BAZINDA HARCAMA DAĞILIMI:"
+  YAZDIR "  - Market: " + harcananMarket + " TL (Tüm harcamaların %" + (harcananMarket / toplamHarcama * 100) + ")"
+  YAZDIR "  - Öğle Yemeği: " + harcananÖğleYemeği + " TL (Tüm harcamaların %" + (harcananÖğleYemeği / toplamHarcama * 100) + ")"
+  YAZDIR "  - Dışarıda Yemek: " + harcananDışarıdaYemek + " TL (Tüm harcamaların %" + (harcananDışarıdaYemek / toplamHarcama * 100) + ")"
+  YAZDIR "  - Ulaşım: " + harcananUlaşım + " TL (Tüm harcamaların %" + (harcananUlaşım / toplamHarcama * 100) + ")"
+  YAZDIR "  - Sosyal: " + harcananSosyal + " TL (Tüm harcamaların %" + (harcananSosyal / toplamHarcama * 100) + ")"
+  YAZDIR "  - Telefon: " + harcananTelefon + " TL (Tüm harcamaların %" + (harcananTelefon / toplamHarcama * 100) + ")"
+  YAZDIR "  - Eğitim: " + harcananEğitim + " TL (Tüm harcamaların %" + (harcananEğitim / toplamHarcama * 100) + ")"
+  YAZDIR "  - Temizlik: " + harcananTemizlik + " TL (Tüm harcamaların %" + (harcananTemizlik / toplamHarcama * 100) + ")"
+  YAZDIR "  - Beklenmedik: " + harcananBeklenmedik + " TL (Tüm harcamaların %" + (harcananBeklenmedik / toplamHarcama * 100) + ")"
+  YAZDIR "--------------------------------------------------------"
+  
+  // En çok harcama yapılan kategoriyi bulma (Basit bir yöntemle)
+  SAYI enÇokHarcama = harcananMarket
+  METİN enÇokHarcamaKategori = "Market"
+  EĞER (harcananSosyal > enÇokHarcama) O ZAMAN enÇokHarcama = harcananSosyal; enÇokHarcamaKategori = "Sosyal"; SON EĞER
+  EĞER (harcananDışarıdaYemek > enÇokHarcama) O ZAMAN enÇokHarcama = harcananDışarıdaYemek; enÇokHarcamaKategori = "Dışarıda Yemek"; SON EĞER
+  // (Not: Bu kontrol tüm kategoriler için genişletilebilir)
+  
+  YAZDIR "AYIN ÖZETİ: En çok harcama '" + enÇokHarcamaKategori + "' kategorisinde yapıldı."
+DEĞİLSE
+  YAZDIR "Bu ay hiç harcama yapılmadı."
+SON EĞER
+
+YAZDIR "--------------------------------------------------------"
+YAZDIR "Ay sonunda kalan net para: " + kalanBütçe + " TL"
+
+EĞER (kalanBütçe >= 0) O ZAMAN
+  YAZDIR "SONUÇ: TEBRİKLER! Bütçeni başarıyla yönettin."
+DEĞİLSE
+  YAZDIR "SONUÇ: DİKKAT! Bu ay bütçeni " + (-1 * kalanBütçe) + " TL aştın. Gelecek ayın planlamasını gözden geçirmelisin."
+SON EĞER
+
+
+
+
+ADIM 1=
+Türkiye/Elazığ bölgesinde yaşayan bir üniversite öğrencisinin 4000tl ile nasıl bir ay geçirebileceğini hesaplayan bir algoritma geliştirmek istiyorum. Bu öğrenci konaklamasını kyk da yapıyor.elektrik,su ve doğalgaz ödemeleri yok. sadece 1200 tl konaklama ücreti ödüyor. Market alışverişinin ne kadar tutacağını kendin hesapla. bu öğrencinin çamaşır makinasını çalıştırmak için kullandığı detarjanları, okula gidiş geliş masraflarını,kyk yemeğini yiyemediği zamanlar da dışarıdan yiyip içmesini, öğle yemeklerini(yurt ücretine dahil değil),telefon operatörü masraflarını,dışarıda içtiği kahveleri ve ders kaynaklarını da işin içine katmayı unutma.Bu konuyla ilgili adım adım bir algoritma geliştirmek istiyorum. koşullu durumları ve tekrar eden işlemleri de içeren detaylı bir pseudocode yazmama yardım eder misin?
+
+
+
+ADIM 2=Bu algoritmayı kopyalayıp farklı bir LLM'e şunu sordum:
+BU ALGORİTMANIN HATALIRINI,EKSİKLİKLERİNİ VE DÜZELTİLEBİLECEK YÖNLERİNİ BANA SAYMANI İSTİYORUM
+
+
+ADIM 3= Bana verilen önerileri alıp tekrar Gemini ile algoritmayı geliştirdik
+BİTİR
