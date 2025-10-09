@@ -35,3 +35,103 @@ SINIF Kişi:
     this.TelefonNumarası = telefon
 
   // Özelliklere dışarıdan erişim için metotlar (Getters)
+  İŞLEV getAd(): DÖN this.Ad
+  İŞLEV getTelefon(): DÖN this.TelefonNumarası
+
+
+// ===================================================================
+// BÖLÜM 2: MERGE SORT SIRALAMA ALGORİTMASI
+// ===================================================================
+
+// İŞLEV: Birleştir (Merge)
+// AÇIKLAMA: Merge Sort'un yardımcı fonksiyonudur. Zaten sıralı olan
+// iki alt listeyi, tek bir sıralı liste haline getirir.
+İŞLEV Birleştir(solListe, sağListe):
+  DEĞİŞKEN sonuçListesi = yeni boş Liste
+  DEĞİŞKEN solİndeks = 0, sağİndeks = 0
+
+  DÖNGÜ solİndeks < solListe.boyutu VE sağİndeks < sağListe.boyutu OLDUĞU SÜRECE:
+    DEĞİŞKEN kişiSol = solListe[solİndeks]
+    DEĞİŞKEN kişiSağ = sağListe[sağİndeks]
+
+    // Karşılaştırma için dil-duyarlı fonksiyonu kullan.
+    EĞER BölgeyeDuyarlıKarşılaştır(kişiSol.getAd(), kişiSağ.getAd()) <= 0 ISE:
+      sonuçListesi'ne kişiSol'u ekle
+      solİndeks = solİndeks + 1
+    DEĞİLSE:
+      sonuçListesi'ne kişiSağ'ı ekle
+      sağİndeks = sağİndeks + 1
+  
+  // Kalan elemanları (varsa) listenin sonuna ekle.
+  sonuçListesi'ne solListe'nin [solİndeks...]'den itibaren kalanını ekle
+  sonuçListesi'ne sağListe'nin [sağİndeks...]'den itibaren kalanını ekle
+    
+  DÖN sonuçListesi
+
+
+// İŞLEV: BirleştirmeSıralaması (Merge Sort)
+// AÇIKLAMA: Ana sıralama fonksiyonudur. Verilen listeyi "Böl ve Yönet"
+// tekniğiyle O(n log n) zaman karmaşıklığında sıralar.
+// Orijinal listeyi DEĞİŞTİRMEZ, yeni bir sıralı liste döndürür.
+İŞLEV BirleştirmeSıralaması(kişiListesi):
+  EĞER kişiListesi.boyutu <= 1 ISE:
+    DÖN kişiListesi'nin bir kopyası
+
+  DEĞİŞKEN ortaNokta = kişiListesi.boyutu / 2
+  DEĞİŞKEN solYarı = kişiListesi'nin [0...ortaNokta-1] aralığındaki kopyası
+  DEĞİŞKEN sağYarı = kişiListesi'nin [ortaNokta...sonuna kadar] aralığındaki kopyası
+
+  DEĞİŞKEN sıralıSol = BirleştirmeSıralaması(solYarı)
+  DEĞİŞKEN sıralıSağ = BirleştirmeSıralaması(sağYarı)
+
+  DÖN Birleştir(sıralıSol, sıralıSağ)
+
+
+// ===================================================================
+// BÖLÜM 3: ANA PROGRAM AKIŞI VE ALGORİTMANIN KULLANIMI
+// ===================================================================
+
+// ---- Başlangıç ----
+
+YAZDIR "Telefon Rehberi Sıralama Programı Başlatılıyor..."
+
+// Adım 1: Sıralanmamış veriyi oluştur.
+DEĞİŞKEN rehberim = [
+  Kişi("İpek Yücel", "555-1111"),
+  Kişi("Can Tekin", "532-2222"),
+  Kişi("Ilgaz Çınar", "542-3333"),
+  Kişi("Zeynep Kaya", "505-4444"),
+  Kişi("Çetin Ünal", "533-5555"),
+  Kişi("Ali Vural", "538-6666")
+]
+
+// Adım 2: Orijinal listeyi ekrana yazdır.
+YAZDIR "\n>> Sıralama Öncesi (Orijinal Liste):"
+DÖNGÜ herKişi İÇİN rehberim:
+  YAZDIR "- " + herKişi.getAd()
+
+// Adım 3: Sıralama algoritmasını çağır ve sonucu yeni bir değişkene ata.
+YAZDIR "\n...Sıralama işlemi gerçekleştiriliyor..."
+DEĞİŞKEN sıralıRehber = BirleştirmeSıralaması(rehberim)
+
+// Adım 4: Sıralanmış yeni listeyi ekrana yazdır.
+YAZDIR "\n>> Sıralama Sonrası (Yeni Liste):"
+DÖNGÜ herKişi İÇİN sıralıRehber:
+  YAZDIR "- " + herKişi.getAd()
+
+// Adım 5: Orijinal listenin değişmediğini doğrula.
+YAZDIR "\n>> Orijinal Liste Kontrolü (Değişmedi):"
+DÖNGÜ herKişi İÇİN rehberim:
+  YAZDIR "- " + herKişi.getAd()
+
+YAZDIR "\nProgram Tamamlandı."
+
+// ---- Bitiş ----
+
+
+
+Adım 1=telefon rehberini alfabetik düzenleme ile ilgili bir algoritma geliştimek istiyorum. koşullu durumları ve tekrar eden işlemleri de içeren detaylı bir pseudocode yazmama yardım eder misin?
+
+
+
+
