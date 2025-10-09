@@ -1,6 +1,9 @@
 Öğrenci No:250541012
 AD-SOYAD:SÜMEYRA ADIYAMAN
 
+BİR ÜNİVERSİTE ÖĞRENCİSİNİN 4000 TL İLE BİR AY GEÇİRME ALGORİTMASI
+
+
 BAŞLA
 
 // =================================================================================
